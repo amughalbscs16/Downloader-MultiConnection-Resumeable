@@ -4,9 +4,15 @@ from dataextract import *
 def joinAllChunks(fileWebName,fileChunksList,fileLocPc):
     with open(fileLocPc,'wb') as ffinal:
         for chunkcount in range(len(fileChunksList)):
-            with open(os.path.join(fileWebName.split(".")[0], str(chunkcount)),'rb') as f:
+            with open(os.path.join(fileWebName.split(".")[0], str(chunkcount)+".txt"),'rb') as f:
                 ffinal.write(f.read())
     return;
+def checkAllChunksDownloaded(fileChunksList):
+    for chunk in fileChunksList:
+        if (not chunk[0]):
+            return False;
+    return True;
+
      
 if __name__ == "__main__":
     #step 1: Read command line arguments
@@ -31,8 +37,9 @@ if __name__ == "__main__":
 
     print(threads)
     print(fileChunksList)
-    print(fileLocPc)
-    joinAllChunks(fileWebName,fileChunksList,fileLocPc);
+
+    if (checkAllChunksDownloaded(fileChunksList)):
+        joinAllChunks(fileWebName,fileChunksList,fileLocPc);
 
 
 
