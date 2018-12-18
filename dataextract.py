@@ -2,6 +2,7 @@ from tcpfunctions import *
 
 
 def getCommandLineArguments(arguments):
+    resume=False
     connections=0
     tInterval=0;
     cType=""

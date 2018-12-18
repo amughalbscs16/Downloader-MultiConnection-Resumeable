@@ -4,7 +4,7 @@ import time;
 import os
 import threading;
 pcSockets=[]
-recvSize=1024*200
+recvSize=2048
 threads=[]
 chunkcount = 0;
 def makeTcpIpSocket():
@@ -45,24 +45,30 @@ def downloadTcpFile(fileChunksList,thread_id,socket,down_file,down_file_dir,host
     print(thread_id)
     global chunkcount
     print(fileChunksList)
+    #Create new directory for each file to store the chunks
     try:
         # Create target Directory
         os.mkdir(down_file.split(".")[0])
         print("Directory " , dirName ,  " Created ") 
     except FileExistsError:
-        print(end="")
+        print("")
     for chunk in fileChunksList:
-        chunkcount+=1;
         print("doing")
         #If Chunk is not downloaded
         if not chunk[0] and not chunk[3]:
             print("doing")
             makeTcpRequest(socket,down_file_dir,host,chunk[1],chunk[2])
             chunk[3]=True; #Packet In Use
+            #Making a folder in the location of .py file to get the chunks of the downloaded file
             with open(os.path.join(down_file.split(".")[0], str(chunkcount)),'wb') as f:
                 resp = socket.recv(recvSize)
-                print(resp)
-                f.write(resp);
+                if (len(resp.decode("ASCII").split("\r\n\r\n"))>1):
+                    data = bytes(resp.decode("ASCII").split("\r\n\r\n")[1],'utf-8');
+                else:
+                    data = bytes(resp,'utf-8'); 
+                print(data)
+                f.write(data);
             chunk[0]=True;
             f.close()
+        chunkcount+=1;
 
