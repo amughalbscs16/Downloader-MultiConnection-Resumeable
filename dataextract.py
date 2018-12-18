@@ -45,5 +45,5 @@ def getCommandLineArguments(arguments):
 def getChunksList(dataSize,recvSize):
     #Downloaded,start,end,InUse
     chunkList=[[False,j*recvSize,(j+1)*recvSize-1,False] for j in range((int(dataSize/recvSize))+1)]
-    chunkList[-1][2] = dataSize-1;
+    chunkList[-1][2] = dataSize;
     return chunkList;

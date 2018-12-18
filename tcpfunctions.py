@@ -4,7 +4,7 @@ import time;
 import os
 import threading;
 pcSockets=[]
-recvSize=4096
+recvSize=1024
 threads=[]
 dataDownList=[]
 threadChunks=[]
@@ -14,6 +14,7 @@ prevTime = time.time();
 presentTime = time.time();
 resumeStoreCount=0
 chunksDone=[[],[],[],[],[]]
+
 def makeTcpIpSocket():
     return socket(AF_INET,SOCK_STREAM)
 
@@ -59,7 +60,7 @@ def downloadTcpFile(fileChunksList,thread_id,socket,down_file,down_file_dir,host
     try:
         # Create target Directory
         os.mkdir(down_file.split(".")[0])
-        print("Directory " , dirName ,  " Created ") 
+        print("Directory " , down_file ,  " Created ") 
     except FileExistsError:
         print("")
     if (startChunkNo>=len(fileChunksList)):
@@ -90,9 +91,11 @@ def downloadTcpFile(fileChunksList,thread_id,socket,down_file,down_file_dir,host
                 #Into the File Directory
                 #named file_resume.txt
                 with open(os.path.join(down_file.split(".")[0],"_resume.txt"),'wb') as resumeFile:
-                    resumeFile.write(bytes(str(connections)+"\n",'utf-8'))
-                    resumeFile.write(bytes(str(len(fileChunksList))+"\n",'utf-8'))
-                    
+                    resumeFile.write(bytes(str(connections)+"\n",'utf-8')) #No Of Connections for resume
+                    resumeFile.write(bytes(str(len(fileChunksList))+"\n",'utf-8')) #Length of Chunks List to read again so No Chunk is Missed
+                    resumeFile.write(bytes(str(fileChunksList[-1][2])+"\n",'utf-8'))     #The FileSize/Content Length
+                    for chunk in fileChunksList:
+                        resumeFile.write(bytes(str(chunk[0])+","+str(chunk[1])+","+str(chunk[2])+","+str(chunk[3])+"\n",'utf-8'))
                     resumeFile.close()
     
 

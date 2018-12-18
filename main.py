@@ -1,28 +1,5 @@
-from tcpfunctions import *
-from dataextract import *
-from printthreads import *
 
-def joinAllChunks(fileWebName,fileChunksList,fileLocPc):
-    with open(fileLocPc,'wb') as ffinal:
-        for chunkcount in range(len(fileChunksList)):
-            with open(os.path.join(fileWebName.split(".")[0], str(chunkcount)+".txt"),'rb') as f:
-                ffinal.write(f.read())
-    return;
-
-def checkAllChunksDownloaded(fileChunksList):
-    for chunk in fileChunksList:
-        if (not chunk[0]):
-            return False;
-    return True;
-
-def assignThreadChunks(fileChunksList,connections):
-    threadChunkList = [[(int(len(fileChunksList)/connections)+1)*i,(int(len(fileChunksList)/connections)+1)*(i+1)-1] for i in range(connections)]
-    threadChunkList[-1][1] = len(fileChunksList)
-    #print(threadChunkList)
-    return threadChunkList;
-
-def resumeFile(fileDirectoryPc):
-    return;
+from clearingstuff import *
 
 if __name__ == "__main__":
     #step 1: Read command line arguments
@@ -36,8 +13,21 @@ if __name__ == "__main__":
     pcSockets = makeTcpIpSockets(connections,serverHost,serverPort)
     #Assign Each Connection to a Thread for downloading
     #print(pcSockets)
+    resumePossible=True
+    resumePossible=os.path.exists(os.path.join(fileWebName.split(".")[0],"_resume.txt"))
+    #print(resumePossible)
     #Generate a Request for file download
-    fileChunksList = getChunksList(fileSize,recvSize)
+    if resume and not resumePossible:
+        print("Tried to resume, but Resume is not possible")
+
+    if not resume or not resumePossible:
+        print("Starting Download from Start")
+        fileChunksList = getChunksList(fileSize,recvSize)
+    
+    else:
+        print("Starting the Resume File")
+        connections,fileChunksList = resumeFile(os.path.join(fileWebName.split(".")[0],"_resume.txt"))
+    
     #Assigning Chunks to Each Thread for Downloading
     threadChunks=assignThreadChunks(fileChunksList,connections)
     #Making the number of bytes downloaded by each connection
@@ -50,7 +40,7 @@ if __name__ == "__main__":
     #Time Thread
     thread = threading.Thread(target=printStats,args=(dataDownList,tInterval,presentTime,prevTime,startTime))
     threads.append(thread)
-    
+
     for i in range(2*connections+1):
         threads[i].start()
         threads[i].join()
@@ -58,6 +48,8 @@ if __name__ == "__main__":
     if (checkAllChunksDownloaded(fileChunksList)):
         joinAllChunks(fileWebName,fileChunksList,fileLocPc);
 
+    #Cleaning all the temporary chunks stored
+    removeTmpFiles(fileWebName.split(".")[0])
     print ("\ndone")
     
 
