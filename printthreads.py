@@ -1,6 +1,6 @@
 from tcpfunctions import *
 from dataextract import *
-
+#Prints the statistics of each connection
 def printStats(dataDownList,tInterval,presentTime,prevTime,startTime):
 	presentTime = time.time()
 	totalTimeTaken = (presentTime-startTime);

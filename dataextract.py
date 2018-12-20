@@ -1,6 +1,6 @@
 from tcpfunctions import *
 
-
+#Extract Data from the command line arguments
 def getCommandLineArguments(arguments):
     resume=False
     connections=0
@@ -35,13 +35,15 @@ def getCommandLineArguments(arguments):
         if arguments[i]=="-o":
             fileLocPc = arguments[i+1]
             filePcName = fileWebName
+            print(fileLocPc)
             if fileLocPc == ".":
                 fileLocPc = sys.path[0]
-                fileLocPc+="\\"+filePcName
+
+            fileLocPc+="/"+filePcName #"\\" for windows "/" for ubuntu;
 
     serverHost=fileLocWeb.split("://")[1].split("/")[0];
     return (serverHost,resume,connections,tInterval,cType,fileLocWeb,fileWebName,serverDownDirectory,fileLocPc)
-
+#Create chunks of the file (recv Size can be changed upon wish)
 def getChunksList(dataSize,recvSize):
     #Downloaded,start,end,InUse
     chunkList=[[False,j*recvSize,(j+1)*recvSize-1,False] for j in range((int(dataSize/recvSize))+1)]
