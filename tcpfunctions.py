@@ -23,6 +23,12 @@ def makeTcpIpSocket():
     return socket(AF_INET,SOCK_STREAM)
 
 def makeTcpIpSockets(connections,serverHost,serverPort):
+    """
+    param connections: No of connections - integer
+    param serverHost: Address of the download HTTP Host - String
+    param serverPort: Port of HTTP Download - integer
+    return: [] List of Sockets
+    """
     for i in range(connections):
         #Create Socket TCP
         s = makeTcpIpSocket();
