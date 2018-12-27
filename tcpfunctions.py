@@ -18,30 +18,35 @@ chunksDone=[[],[],[],[],[]]
 def makeTcpIpSocket():
     """
     input: Nothing
-    return: Create a TCP IP Socket
+    return: Create a TCP IP Socket - socket
     """
     return socket(AF_INET,SOCK_STREAM)
 
 def makeTcpIpSockets(connections,serverHost,serverPort):
     """
     param connections: No of connections - integer
-    param serverHost: Address of the download HTTP Host - String
+    param serverHost: Address of the download HTTP Host - string
     param serverPort: Port of HTTP Download - integer
-    return: [] List of Sockets
+    return: List of Sockets - list
     """
     for i in range(connections):
-        #Create Socket TCP
         s = makeTcpIpSocket();
         makeTcpConnect(s,serverHost,serverPort)
         pcSockets.append(s)
-    return pcSockets;
-#Connect each socket to Ip/Port of Server
+    return pcSockets
+
 def makeTcpConnect(socket,serverIp,serverPort):
-    socket.connect((serverIp,int(serverPort)));
-#Close the socket connections
+    """
+    param socket: The TCP/IP Socket created - socket
+    param serverIp: The IP Address/Host of the Server - string
+    param serverPort: The Port for HTTP Download connection - integer
+    return: Nothing
+    """
+    socket.connect((serverIp,int(serverPort)))
+
 def closeTcpSockets(pcSockets):
     for s in pcSockets:
-        s.close();
+        s.close()
 #Get Header data i.e. specifically the Size of File
 def getHeaderData(serverHost, serverFile, serverPort, down_file_dir):
     socket = makeTcpIpSocket()
