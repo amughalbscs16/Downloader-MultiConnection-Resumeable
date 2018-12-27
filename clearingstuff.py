@@ -5,6 +5,7 @@ import shutil
 #Join All the chunks of file downloaded into the given directory.
 def joinAllChunks(fileWebName,fileChunksList,fileLocPc):
     """
+    Function: Joins all the chunks to a final output file
     param fileWebName: The name of file to download - string
     param fileChunksList: The chunks list for each file - 2d list
     param fileLocPc: The location of file to be store on PC - string
@@ -17,9 +18,9 @@ def joinAllChunks(fileWebName,fileChunksList,fileLocPc):
         ffinal.close()
     return;
 
-#Check if all the chunks have been downloaded
 def checkAllChunksDownloaded(fileChunksList):
     """
+    Function: Checks if all chunks are successfully downloaded
     param fileChunksList: The chunks list for each file - 2d list
     return: All chunks downloaded (True/False) - boolean
     """
@@ -28,12 +29,17 @@ def checkAllChunksDownloaded(fileChunksList):
             return False;
     return True;
 
-#Assign Chunks sequence to each connection/Thread
 def assignThreadChunks(fileChunksList,connections):
+    """
+    Function: Assigns chunks to each thread for downloading
+    param fileChunksList: The chunks list for each file - 2d list
+    param connections: The number of connections - integer
+    return: the chunks list assigned to each connection/thread - 2d list
+    """
     threadChunkList = [[(int(len(fileChunksList)/connections)+1)*i,(int(len(fileChunksList)/connections)+1)*(i+1)-1] for i in range(connections)]
     threadChunkList[-1][1] = len(fileChunksList)
-    #print(threadChunkList)
     return threadChunkList;
+    
 #Remove the temporary created files after Download Completes
 def removeTmpFiles(fileDirectoryPc):
     shutil.rmtree(fileDirectoryPc)
