@@ -78,10 +78,16 @@ def getHeaderData(serverHost, serverFile, serverPort, down_file_dir):
     socket.close()
     return (size)
 
-#Makes TCP Request for each connection
 def makeTcpRequest(socket,down_file_dir,host,startRange,endRange):
+    """
+    param socket: TCP/IP connected socket - socket
+    param down_file_dir: The directory of download file on HTTP Host - string
+    param host: The Host address - string
+    param startRange: Start range in bytes to download - integer
+    param endRange: End range in bytes to download - integer
+    """
     socket.send(bytes("GET "+down_file_dir+" HTTP/1.1\r\nHost: "+host+"\r\nRange: bytes="+str(startRange)+"-"+str(endRange)+"\r\n\r\n",'utf-8'))
-#Downloads the chunks of File from Start-End Chunks as Assigned In the Start
+
 def downloadTcpFile(fileChunksList,thread_id,socket,down_file,down_file_dir,host,startChunkNo,endChunkNo,dataDownList,fileLocPc,connections):
     global resumeStoreCount
     #Create new directory for each file to store the chunks
