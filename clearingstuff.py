@@ -1,6 +1,5 @@
 from tcpfunctions import *
 from dataextract import *
-from printthreads import *
 import shutil
 #Join All the chunks of file downloaded into the given directory.
 def joinAllChunks(fileWebName,fileChunksList,fileLocPc):
@@ -12,7 +11,7 @@ def joinAllChunks(fileWebName,fileChunksList,fileLocPc):
     """
     with open(fileLocPc,'wb') as ffinal:
         for chunkcount in range(len(fileChunksList)):
-            with open(os.path.join(fileWebName.split(".")[0], str(chunkcount)+".txt"),'rb') as f:
+            with open(os.path.join(fileWebName.split(".")[0], str(chunkcount)+fileWebName.split(".")[1]),'rb') as f:
                 ffinal.write(f.read())
                 f.close()
         ffinal.close()

@@ -123,7 +123,7 @@ def downloadTcpFile(fileChunksList,thread_id,socket,down_file,down_file_dir,host
         if not fileChunksList[i][0] and not fileChunksList[i][3]:
             fileChunksList[i][3]=True; #Packet In Use
             #Making a folder in the location of .py file to get the chunks of the downloaded file
-            with open(os.path.join(down_file.split(".")[0], str(i)+".txt"),'wb') as f:
+            with open(os.path.join(down_file.split(".")[0], str(i)+down_file.split(".")[1]),'wb') as f:
                 resp = socket.recv(recvSize)  #Size is double so as to recieve the partial requests fully
                 #Removing extra partial content header from the files.
                 if (len(resp.decode("ASCII").split("\r\n\r\n"))>1):
