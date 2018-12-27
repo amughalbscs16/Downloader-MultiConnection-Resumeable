@@ -17,6 +17,7 @@ chunksDone=[[],[],[],[],[]]
 
 def makeTcpIpSocket():
     """
+    Function: Creates a TCP IP Socket
     input: Nothing
     return: Create a TCP IP Socket - socket
     """
@@ -24,6 +25,7 @@ def makeTcpIpSocket():
 
 def makeTcpIpSockets(connections,serverHost,serverPort):
     """
+    Function: Makes TCP IP Sockets and Connects
     param connections: No of connections - integer
     param serverHost: Address of the download HTTP Host - string
     param serverPort: Port of HTTP Download - integer
@@ -37,25 +39,38 @@ def makeTcpIpSockets(connections,serverHost,serverPort):
 
 def makeTcpConnect(socket,serverIp,serverPort):
     """
+    Function: Connects the TCP Sockets to Host/Port
     param socket: The TCP/IP Socket created - socket
     param serverIp: The IP Address/Host of the Server - string
-    param serverPort: The Port for HTTP Download connection - integer
+    param serverPort: The Port for HTTP Download connection - integer   
     return: Nothing
     """
     socket.connect((serverIp,int(serverPort)))
 
 def closeTcpSockets(pcSockets):
+    """
+    Function: Closes all the TCP Connections in the List
+    param pcSockets: List of PC Sockets - list
+    return: Nothing
+    """
     for s in pcSockets:
         s.close()
-#Get Header data i.e. specifically the Size of File
+
 def getHeaderData(serverHost, serverFile, serverPort, down_file_dir):
+    """
+    Function: Extract the header information specifically Size
+    param serverHost: server host address - string
+    param serverFile: file name on the server - string
+    param serverPort: port to connect to the server - integer
+    param down_file_dir: the directory of file in the server - string
+    return: Size of the File - integer
+    """
+    data = ""
+    size=0
     socket = makeTcpIpSocket()
     socket.connect((serverHost,int(serverPort)))
     socket.send(bytes("GET "+down_file_dir+" HTTP/1.1\r\nHost: "+serverHost+"\r\n\r\n",'utf-8'))
-    headers = socket.recv(2048)
-    data = ""
-    size=0
-    #print(headers)
+    headers = socket.recv(2048) 
     headers = headers.decode("ASCII").split("\r\n\r\n")[0];
     for row in headers.split("\r\n"):
         if (row.split(":")[0]=="Content-Length"):
