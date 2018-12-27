@@ -14,10 +14,14 @@ prevTime = time.time();
 presentTime = time.time();
 resumeStoreCount=0
 chunksDone=[[],[],[],[],[]]
-#Creates Tcp Ip Sockets
+
 def makeTcpIpSocket():
+    """
+    input: Nothing
+    return: Create a TCP IP Socket
+    """
     return socket(AF_INET,SOCK_STREAM)
-#Create TCP Ip Socket Connections as needed 
+
 def makeTcpIpSockets(connections,serverHost,serverPort):
     for i in range(connections):
         #Create Socket TCP
