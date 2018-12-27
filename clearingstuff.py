@@ -4,6 +4,11 @@ from printthreads import *
 import shutil
 #Join All the chunks of file downloaded into the given directory.
 def joinAllChunks(fileWebName,fileChunksList,fileLocPc):
+    """
+    param fileWebName: The name of file to download - string
+    param fileChunksList: The chunks list for each file - 2d list
+    param fileLocPc: The location of file to be store on PC - string
+    """
     with open(fileLocPc,'wb') as ffinal:
         for chunkcount in range(len(fileChunksList)):
             with open(os.path.join(fileWebName.split(".")[0], str(chunkcount)+".txt"),'rb') as f:
@@ -11,6 +16,7 @@ def joinAllChunks(fileWebName,fileChunksList,fileLocPc):
                 f.close()
         ffinal.close()
     return;
+    
 #Check if all the chunks have been downloaded
 def checkAllChunksDownloaded(fileChunksList):
     for chunk in fileChunksList:
