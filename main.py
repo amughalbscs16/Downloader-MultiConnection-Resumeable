@@ -34,13 +34,16 @@ if __name__ == "__main__":
     for i in range(connections):    
         thread = threading.Thread(target=downloadTcpFile,args=(fileChunksList,i,pcSockets[i],fileWebName,fileLocWeb,serverHost,threadChunks[i][0],threadChunks[i][1],dataDownList,fileLocPc,connections))
         threads.append(thread)
-        thread = threading.Timer(tInterval,printStats,args=[dataDownList,tInterval,presentTime,prevTime,startTime])
-        threads.append(thread)
+    thread = threading.Timer(tInterval,printStats,args=[dataDownList,tInterval,presentTime,prevTime,startTime,fileChunksList])
+    threads.append(thread)
     
     #Time Thread
     for i in range(len(threads)):
         threads[i].start()
+
+    for i in range(len(threads)):
         threads[i].join()
+
         
     if (checkAllChunksDownloaded(fileChunksList)):
         joinAllChunks(fileWebName,fileChunksList,fileLocPc);

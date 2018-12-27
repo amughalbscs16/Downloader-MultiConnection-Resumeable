@@ -39,7 +39,7 @@ def assignThreadChunks(fileChunksList,connections):
     threadChunkList = [[(int(len(fileChunksList)/connections)+1)*i,(int(len(fileChunksList)/connections)+1)*(i+1)-1] for i in range(connections)]
     threadChunkList[-1][1] = len(fileChunksList)
     return threadChunkList;
-    
+
 #Remove the temporary created files after Download Completes
 def removeTmpFiles(fileDirectoryPc):
     shutil.rmtree(fileDirectoryPc)
@@ -67,3 +67,24 @@ def resumeFile(fileDirectoryPc):
                 #print(tmpChunk[0]=='True')
         resumeFile.close()
     return (connections,fileChunksList);
+    #Prints the statistics of each connection
+def printStats(dataDownList,tInterval,presentTime,prevTime,startTime,fileChunksList):
+    """
+    param dataDownList: List containing downloaded data of each connection/thread
+    param tInterval: Time after which the download statistics should print
+    param presentTime: The present time
+    oaran prevTime: The previous time of printing download statistics
+    param startTime: The starting time of download.
+    """
+    while True:
+        if checkAllChunksDownloaded(fileChunksList):
+            break;
+        presentTime = time.time()
+        #Total Time Taken
+        totalTimeTaken = (presentTime-startTime);
+        #Print the statistics if the tInterval seconds time has passed
+        if (presentTime - prevTime >= tInterval):
+            for i in range(len(dataDownList)):
+                print("Download Speed Connection:"+str(i)+" "+str(dataDownList[i]/totalTimeTaken)+" Bytes/s" );
+        prevTime=presentTime;
+        time.sleep(tInterval)
