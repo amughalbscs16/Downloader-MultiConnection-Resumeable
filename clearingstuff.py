@@ -16,13 +16,18 @@ def joinAllChunks(fileWebName,fileChunksList,fileLocPc):
                 f.close()
         ffinal.close()
     return;
-    
+
 #Check if all the chunks have been downloaded
 def checkAllChunksDownloaded(fileChunksList):
+    """
+    param fileChunksList: The chunks list for each file - 2d list
+    return: All chunks downloaded (True/False) - boolean
+    """
     for chunk in fileChunksList:
         if (not chunk[0]):
             return False;
     return True;
+
 #Assign Chunks sequence to each connection/Thread
 def assignThreadChunks(fileChunksList,connections):
     threadChunkList = [[(int(len(fileChunksList)/connections)+1)*i,(int(len(fileChunksList)/connections)+1)*(i+1)-1] for i in range(connections)]
