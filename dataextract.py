@@ -2,6 +2,11 @@ from tcpfunctions import *
 
 #Extract Data from the command line arguments
 def getCommandLineArguments(arguments):
+    """
+    Function: self written parser for arguments
+    param arguments: input command line arguments"
+    return: cleaned arguments
+    """
     resume=False
     connections=0
     tInterval=0;
@@ -43,7 +48,7 @@ def getCommandLineArguments(arguments):
 
     serverHost=fileLocWeb.split("://")[1].split("/")[0];
     return (serverHost,resume,connections,tInterval,cType,fileLocWeb,fileWebName,serverDownDirectory,fileLocPc)
-#Create chunks of the file (recv Size can be changed upon wish)
+
 def getChunksList(dataSize,recvSize):
     #Downloaded,start,end,InUse
     chunkList=[[False,j*recvSize,(j+1)*recvSize-1,False] for j in range((int(dataSize/recvSize))+1)]
