@@ -80,21 +80,35 @@ def getHeaderData(serverHost, serverFile, serverPort, down_file_dir):
 
 def makeTcpRequest(socket,down_file_dir,host,startRange,endRange):
     """
+    Function: Downloads or requests the file fron startRange-endRange(Bytes)
     param socket: TCP/IP connected socket - socket
     param down_file_dir: The directory of download file on HTTP Host - string
     param host: The Host address - string
     param startRange: Start range in bytes to download - integer
     param endRange: End range in bytes to download - integer
+    return: Nothing
     """
     socket.send(bytes("GET "+down_file_dir+" HTTP/1.1\r\nHost: "+host+"\r\nRange: bytes="+str(startRange)+"-"+str(endRange)+"\r\n\r\n",'utf-8'))
 
 def downloadTcpFile(fileChunksList,thread_id,socket,down_file,down_file_dir,host,startChunkNo,endChunkNo,dataDownList,fileLocPc,connections):
+    """
+    Function: Downloads the file chunks.
+    param fileChunksList: The list of each chunk and its starting and ending point- 2D list
+    param thread_id: The id of thread associated with the downloadTcpFile function - integer
+    param socket: The connected TCP IT socket - socket
+    param down_file: The name of download file on the server - string
+    param down_file_dir: The directory of file on Host - string
+    param startChunkNo: The no of chunk alloted to this connection to start downloading
+    param endChunkNo: The no of chunk alloted to this connection to end download
+    param dataDownList: The Data downloaded by each thread list - list
+    param fileLocPc: The Location to store the file on PC - string
+    param connections: The number of connections in total - integer
+    return: Nothing
+    """
     global resumeStoreCount
-    #Create new directory for each file to store the chunks
+    #create new directory for each file to store the chunks
     try:
-        # Create target Directory
         os.mkdir(down_file.split(".")[0])
-    #If File Exists Do not create new file simply pass to next Code
     except FileExistsError:
         pass
     #If the chunk is not assigned to this thread
@@ -103,7 +117,7 @@ def downloadTcpFile(fileChunksList,thread_id,socket,down_file,down_file_dir,host
     #If the chunk is not assigned to this thread
     if (endChunkNo>=len(fileChunksList)):
         endChunkNo=len(fileChunksList)-1;
-    #Make Tcp Download Request from Start of First Chunk - End of Final Assigned Chunk
+    #Make tcp download request from start of first chunk - end of final assigned chunk
     makeTcpRequest(socket,down_file_dir,host,fileChunksList[startChunkNo][1],fileChunksList[endChunkNo][2])
     for i in range(startChunkNo,endChunkNo+1):
         if not fileChunksList[i][0] and not fileChunksList[i][3]:
@@ -116,18 +130,12 @@ def downloadTcpFile(fileChunksList,thread_id,socket,down_file,down_file_dir,host
                     data = bytes(resp.decode("ASCII").split("\r\n\r\n")[1],'utf-8');
                 else:
                     data = resp;
-                #print(data)
                 f.write(data);
                 dataDownList[thread_id]+=len(data);
             fileChunksList[i][0]=True;
             resumeStoreCount+=1
             #Makes a Resume file after each 100 chunks recieved.
-            #Implement Resume Part
             if (resumeStoreCount==100):
-                #Store the whole into a file
-                #Connections No
-                #Into the File Directory
-                #named _resume.txt
                 with open(os.path.join(down_file.split(".")[0],"_resume.txt"),'wb') as resumeFile:
                     resumeFile.write(bytes(str(connections)+"\n",'utf-8')) #No Of Connections for resume
                     resumeFile.write(bytes(str(len(fileChunksList))+"\n",'utf-8')) #Length of Chunks List to read again so No Chunk is Missed
@@ -138,5 +146,3 @@ def downloadTcpFile(fileChunksList,thread_id,socket,down_file,down_file_dir,host
 
                 resumeStoreCount=0;
             f.close()
-        #print("Thread id"+str(thread_id))
-
