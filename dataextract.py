@@ -50,7 +50,13 @@ def getCommandLineArguments(arguments):
     return (serverHost,resume,connections,tInterval,cType,fileLocWeb,fileWebName,serverDownDirectory,fileLocPc)
 
 def getChunksList(dataSize,recvSize):
-    #Downloaded,start,end,InUse
+    """
+    Function: Divides the file into chunks
+    param dataSize: The size of file total - integer
+    param recvSize: The size of chunk to recieve - integer
+    return: A List of each chunk's download information - list
+    """
+    #Each chunk contains a list of [Downloaded,start,end,InUse]
     chunkList=[[False,j*recvSize,(j+1)*recvSize-1,False] for j in range((int(dataSize/recvSize))+1)]
     chunkList[-1][2] = dataSize;
     return chunkList;
